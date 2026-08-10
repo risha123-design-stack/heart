@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Love Heart</title>
+  <title>RISA Panda</title>
 
   <style>
     * {
@@ -18,13 +18,24 @@
       min-height: 100vh;
       overflow: hidden;
 
-      background: #000;
+      background:
+        radial-gradient(
+          circle at center,
+          #f9d7e7 0%,
+          #d8c4f4 48%,
+          #9379c6 100%
+        );
 
       display: flex;
       justify-content: center;
       align-items: center;
 
-      font-family: Arial, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
+
+      user-select: none;
+      -webkit-user-select: none;
+
+      touch-action: manipulation;
     }
 
     .container {
@@ -36,37 +47,56 @@
       display: flex;
       justify-content: center;
       align-items: center;
+
+      cursor: pointer;
     }
 
+    /* =====================================
+       BACKGROUND LIGHT
+    ===================================== */
 
     .glow {
       position: absolute;
 
-      width: 420px;
-      height: 420px;
+      width: 520px;
+      height: 520px;
 
       border-radius: 50%;
 
-      background: rgba(255, 70, 150, 0.12);
+      background:
+        radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.7),
+          rgba(255, 255, 255, 0.15) 55%,
+          transparent 72%
+        );
 
-      filter: blur(80px);
+      filter: blur(25px);
 
-      animation: glowBeat 0.9s ease-in-out infinite;
+      pointer-events: none;
     }
 
+    /* =====================================
+       PANDA
 
-    #heart {
+       IMPORTANT:
+       Panda itself has NO animation.
+    ===================================== */
+
+    #panda {
       position: relative;
 
-      width: 500px;
-      height: 500px;
+      width: 520px;
+      height: 520px;
 
-      transform-style: preserve-3d;
+      z-index: 10;
 
-      z-index: 2;
+      transform: none;
     }
 
-    
+    /* =====================================
+       RISA WORD
+    ===================================== */
 
     .word {
       position: absolute;
@@ -74,233 +104,454 @@
       left: 50%;
       top: 50%;
 
-      color: #ff87b7;
-
-      font-size: 12px;
-      font-weight: 600;
+      transform:
+        translate(
+          var(--x),
+          var(--y)
+        );
 
       white-space: nowrap;
 
-      transform-origin: center;
+      font-size: 9px;
+      font-weight: 800;
+
+      pointer-events: none;
+
+      transition:
+        opacity 0.08s linear,
+        transform 0.15s ease;
+    }
+
+    /* WHITE FACE */
+
+    .face-word {
+      color: #ffffff;
 
       text-shadow:
-        0 0 3px #ff4f9a,
-        0 0 7px #ff4f9a,
-        0 0 12px rgba(255, 79, 154, 0.9);
-
-      animation:
-        wordScatter 0.9s
-        cubic-bezier(.4, 0, .2, 1)
-        infinite;
+        0 0 1px rgba(0, 0, 0, 0.6),
+        0 0 4px rgba(255, 255, 255, 0.8);
     }
 
-    
+    /* BLACK PANDA PARTS */
 
-    @keyframes wordScatter {
+    .dark-word {
+      color: #050505;
 
-      /*
-        ORIGINAL HEART
-      */
+      font-weight: 900;
 
-      0% {
-        transform:
-          translate3d(
-            var(--x),
-            var(--y),
-            var(--z)
-          )
-          scale(1);
-
-        opacity: 0.85;
-      }
-
-
-      /*
-        Original shape
-        little pause
-      */
-
-      18% {
-        transform:
-          translate3d(
-            var(--x),
-            var(--y),
-            var(--z)
-          )
-          scale(1);
-
-        opacity: 0.9;
-      }
-
-
-      /*
-        FIRST PUSH
-      */
-
-      30% {
-        transform:
-          translate3d(
-            calc(var(--x) + var(--scatter-x1)),
-            calc(var(--y) + var(--scatter-y1)),
-            var(--z)
-          )
-          scale(1.05);
-
-        opacity: 1;
-      }
-
-
-      /*
-        BIGGEST SCATTER
-
-        Heart looks bigger here
-        because WORDS move outward.
-      */
-
-      42% {
-        transform:
-          translate3d(
-            calc(var(--x) + var(--scatter-x2)),
-            calc(var(--y) + var(--scatter-y2)),
-            var(--z)
-          )
-          scale(1.12);
-
-        opacity: 1;
-      }
-
-
-      /*
-        QUICK RETURN
-      */
-
-      56% {
-        transform:
-          translate3d(
-            calc(var(--x) + var(--scatter-x1)),
-            calc(var(--y) + var(--scatter-y1)),
-            var(--z)
-          )
-          scale(1.04);
-
-        opacity: 1;
-      }
-
-
-      /*
-        BACK TO HEART
-      */
-
-      68% {
-        transform:
-          translate3d(
-            var(--x),
-            var(--y),
-            var(--z)
-          )
-          scale(1);
-
-        opacity: 0.9;
-      }
-
-
-      100% {
-        transform:
-          translate3d(
-            var(--x),
-            var(--y),
-            var(--z)
-          )
-          scale(1);
-
-        opacity: 0.85;
-      }
+      text-shadow:
+        0 0 1px rgba(255, 255, 255, 0.25);
     }
 
+    /* =====================================
+       EARS
 
-    /* =============================
-       CENTER TEXT
-    ============================== */
+       ONLY ears resize slightly.
+    ===================================== */
 
-    .center-text {
+    .ear {
       position: absolute;
 
       left: 50%;
       top: 50%;
 
-      transform: translate(-50%, -45%);
+      width: 1px;
+      height: 1px;
 
-      color: white;
+      transform:
+        translate(
+          var(--ear-x),
+          var(--ear-y)
+        );
 
-      font-size: 20px;
-      letter-spacing: 4px;
+      transform-origin: center;
 
-      z-index: 5;
+      animation:
+        earMove 2.1s ease-in-out infinite;
+    }
+
+    .ear .word {
+      left: 0;
+      top: 0;
+    }
+
+    .left-ear {
+      --ear-x: -145px;
+      --ear-y: -135px;
+    }
+
+    .right-ear {
+      --ear-x: 145px;
+      --ear-y: -135px;
+
+      animation-delay: 0.15s;
+    }
+
+    @keyframes earMove {
+
+      0%,
+      100% {
+        transform:
+          translate(
+            var(--ear-x),
+            var(--ear-y)
+          )
+          scale(1);
+      }
+
+      45% {
+        transform:
+          translate(
+            var(--ear-x),
+            var(--ear-y)
+          )
+          scale(1.07);
+      }
+
+      55% {
+        transform:
+          translate(
+            var(--ear-x),
+            var(--ear-y)
+          )
+          scale(0.97);
+      }
+
+      70% {
+        transform:
+          translate(
+            var(--ear-x),
+            var(--ear-y)
+          )
+          scale(1);
+      }
+    }
+
+    /* =====================================
+       EYES
+    ===================================== */
+
+    .eye {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 40px;
+  height: 25px;
+
+  transform: translate(-50%, -50%);
+
+  overflow: hidden;
+  border-radius: 50%;
+
+  pointer-events: none;
+}
+
+.left-eye {
+  margin-left: -70px;
+  margin-top: -30px;
+}
+
+.right-eye {
+  margin-left: 70px;
+  margin-top: -30px;
+}
+
+
+/* WHITE PART OF EYE */
+
+.pupil {
+  position: absolute;
+
+  left: 50%;
+  top: 50%;
+
+  width: 14px;
+  height: 18px;
+
+  background: #ffffff;
+
+  border-radius: 50%;
+
+  transform: translate(-50%, -50%);
+
+  z-index: 1;
+
+  box-shadow:
+    0 0 4px rgba(255, 255, 255, 0.8);
+}
+
+
+/* EYELID */
+
+.eyelid {
+  position: absolute;
+
+  left: 0;
+  top: -100%;
+
+  width: 100%;
+  height: 100%;
+
+  background: #050505;
+
+  z-index: 5;
+
+  animation: realBlink 4s infinite;
+}
+
+
+/* OPEN -> CLOSE -> OPEN */
+
+@keyframes realBlink {
+
+  /* OPEN */
+  0%,
+  82% {
+    top: -100%;
+  }
+
+  /* START CLOSING */
+  85% {
+    top: -50%;
+  }
+
+  /* COMPLETELY CLOSED */
+  88%,
+  91% {
+    top: 0;
+  }
+
+  /* START OPENING */
+  94% {
+    top: -50%;
+  }
+
+  /* COMPLETELY OPEN */
+  97%,
+  100% {
+    top: -100%;
+  }
+}
+
+@keyframes blink {
+  0%,
+  88%,
+  92%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      scaleY(1);
+  }
+
+  89%,
+  91% {
+    transform:
+      translate(-50%, -50%)
+      scaleY(0.08);
+  }
+}
+
+    @keyframes blink {
+  0%,
+  88%,
+  92%,
+  100% {
+    transform:
+      translate(-50%, -50%)
+      scaleY(1);
+  }
+
+  89%,
+  91% {
+    transform:
+      translate(-50%, -50%)
+      scaleY(0.08);
+  }
+}
+
+    /* =====================================
+       MOUTH
+    ===================================== */
+
+    #mouth {
+      position: absolute;
+
+      left: 50%;
+      top: 50%;
+
+      width: 58px;
+      height: 25px;
+
+      margin-left: -29px;
+      margin-top: 78px;
+
+      pointer-events: none;
+
+      z-index: 20;
+    }
+
+    .mouth-line {
+      position: absolute;
+
+      left: 50%;
+      top: 0;
+
+      width: 45px;
+      height: 14px;
+
+      transform:
+        translateX(-50%);
+
+      border-bottom:
+        4px solid #050505;
+
+      border-radius:
+        0 0 50% 50%;
+    }
+
+    /*
+       hidden mouth opening
+    */
+
+    .mouth-open {
+      position: absolute;
+
+      left: 50%;
+      top: 8px;
+
+      width: 28px;
+      height: 5px;
+
+      transform:
+        translateX(-50%)
+        scaleY(0);
+
+      transform-origin: top;
+
+      border-radius:
+        0 0 50% 50%;
+
+      background: #050505;
+
+      opacity: 0;
+    }
+
+    /*
+      voice speaking:
+      mouth opens/closes repeatedly
+    */
+
+    #mouth.talking .mouth-open {
+      opacity: 1;
+
+      animation:
+        talkMouth 0.18s ease-in-out infinite;
+    }
+
+    #mouth.talking .mouth-line {
+      opacity: 0.35;
+    }
+
+    @keyframes talkMouth {
+
+      0%,
+      100% {
+        transform:
+          translateX(-50%)
+          scaleY(0.2);
+
+        height: 5px;
+      }
+
+      50% {
+        transform:
+          translateX(-50%)
+          scaleY(1);
+
+        height: 24px;
+      }
+    }
+
+    /* =====================================
+       DON'T TOUCH ME
+    ===================================== */
+
+    #dontTouch {
+      position: absolute;
+
+      left: 50%;
+      top: 14%;
+
+      width: 100%;
+
+      transform:
+        translateX(-50%)
+        scale(0.8);
+
+      text-align: center;
+
+      color: #ffffff;
+
+      font-size: 34px;
+      font-weight: 900;
+
+      letter-spacing: 3px;
+
+      opacity: 0;
+
+      pointer-events: none;
+
+      z-index: 100;
 
       text-shadow:
-        0 0 8px #ff4f9a,
-        0 0 16px #ff4f9a;
+        0 0 5px #7c3aed,
+        0 0 12px #7c3aed,
+        0 0 24px rgba(124, 58, 237, 0.8);
 
-      animation: centerBeat 0.9s ease-in-out infinite;
+      transition:
+        opacity 0.15s,
+        transform 0.15s;
     }
 
+    #dontTouch.show {
+      opacity: 1;
 
-    @keyframes centerBeat {
-
-      0%,
-      100% {
-        transform:
-          translate(-50%, -45%)
-          scale(1);
-
-        opacity: 0.6;
-      }
-
-      42% {
-        transform:
-          translate(-50%, -45%)
-          scale(1.12);
-
-        opacity: 1;
-      }
+      transform:
+        translateX(-50%)
+        scale(1);
     }
 
+    /* =====================================
+       MOBILE
+    ===================================== */
 
-    @keyframes glowBeat {
-
-      0%,
-      100% {
-        transform: scale(0.85);
-        opacity: 0.35;
-      }
-
-      42% {
-        transform: scale(1.15);
-        opacity: 0.75;
-      }
-    }
-
-
-    
     @media (max-width: 600px) {
 
-      #heart {
-        width: 340px;
-        height: 340px;
+      #panda {
+        width: 350px;
+        height: 350px;
+
+        transform: scale(0.68);
       }
 
-      .word {
-        font-size: 8px;
-      }
-
-      .center-text {
-        font-size: 14px;
-        letter-spacing: 3px;
-      }
+      /*
+        Container transform above is static,
+        not animated.
+      */
 
       .glow {
-        width: 300px;
-        height: 300px;
+        width: 330px;
+        height: 330px;
+      }
+
+      #dontTouch {
+        top: 11%;
+
+        font-size: 24px;
+
+        letter-spacing: 2px;
       }
     }
   </style>
@@ -309,14 +560,56 @@
 
 <body>
 
-  <div class="container">
+  <div
+    class="container"
+    id="container"
+  >
 
     <div class="glow"></div>
 
-    <div id="heart"></div>
+    <div id="dontTouch">
+      DON'T TOUCH ME!
+    </div>
 
-    <div class="center-text">
-      
+
+    <div id="panda">
+
+      <!-- EARS -->
+
+      <div
+        class="ear left-ear"
+        id="leftEar"
+      ></div>
+
+      <div
+        class="ear right-ear"
+        id="rightEar"
+      ></div>
+
+
+      <!-- EYES -->
+
+      <div class="eye left-eye">
+  <div class="pupil"></div>
+  <div class="eyelid"></div>
+</div>
+
+<div class="eye right-eye">
+  <div class="pupil"></div>
+  <div class="eyelid"></div>
+</div>
+
+
+      <!-- MOUTH -->
+
+      <div id="mouth">
+
+        <div class="mouth-line"></div>
+
+        <div class="mouth-open"></div>
+
+      </div>
+
     </div>
 
   </div>
@@ -324,230 +617,496 @@
 
   <script>
 
-    const heart =
-      document.getElementById("heart");
+    const panda =
+      document.getElementById(
+        "panda"
+      );
+
+    const container =
+      document.getElementById(
+        "container"
+      );
+
+    const leftEar =
+      document.getElementById(
+        "leftEar"
+      );
+
+    const rightEar =
+      document.getElementById(
+        "rightEar"
+      );
+
+    const mouth =
+      document.getElementById(
+        "mouth"
+      );
+
+    const dontTouch =
+      document.getElementById(
+        "dontTouch"
+      );
 
 
-   
+    /* =====================================
+       ONLY WORD USED
+    ===================================== */
 
-    const heartText =
-      "Risa";
-
-    const totalWords =
-      700;
+    const pandaWord = "RISA";
 
 
-   
+    /* =====================================
+       CREATE NORMAL PANDA WORD
+    ===================================== */
 
-    const heartScale =
-      window.innerWidth <= 600
-        ? 8
-        : 12;
-
-
-    
-
-    for (
-      let i = 0;
-      i < totalWords;
-      i++
+    function createWord(
+      x,
+      y,
+      type = "face",
+      parent = panda
     ) {
 
-      const word =
-        document.createElement("span");
-
-      word.classList.add("word");
-
-      word.textContent =
-        heartText;
-
-
-      
-
-      const t =
-        Math.random() *
-        Math.PI *
-        2;
-
-
-      
-
-      const x =
-        16 *
-        Math.pow(
-          Math.sin(t),
-          3
+      const span =
+        document.createElement(
+          "span"
         );
 
 
-      const y =
-        13 * Math.cos(t)
-        -
-        5 * Math.cos(2 * t)
-        -
-        2 * Math.cos(3 * t)
-        -
-        Math.cos(4 * t);
+      span.classList.add(
+        "word"
+      );
 
 
-     
+      if (type === "dark") {
 
-      const fill =
-        Math.sqrt(
-          Math.random()
+        span.classList.add(
+          "dark-word"
         );
 
+      } else {
 
-      const posX =
-        x *
-        heartScale *
-        fill;
+        span.classList.add(
+          "face-word"
+        );
 
-
-      const posY =
-        -y *
-        heartScale *
-        fill;
+      }
 
 
-
-      const randomX =
-        (
-          Math.random() - 0.5
-        ) * 8;
+      span.textContent =
+        pandaWord;
 
 
-      const randomY =
-        (
-          Math.random() - 0.5
-        ) * 8;
-
-
-      const finalX =
-        posX + randomX;
-
-
-      const finalY =
-        posY + randomY;
-
-
-      
-
-      const z =
-        (
-          Math.random() - 0.5
-        ) * 25;
-
-
-     
-      const distance =
-        Math.sqrt(
-          finalX * finalX +
-          finalY * finalY
-        ) || 1;
-
-
-      
-
-      const directionX =
-        finalX / distance;
-
-
-      const directionY =
-        finalY / distance;
-
-
-     
-
-      const scatter1 =
-        18 +
-        Math.random() * 15;
-
-
-      
-
-      const scatter2 =
-        38 +
-        Math.random() * 28;
-
-
-      const scatterX1 =
-        directionX *
-        scatter1;
-
-
-      const scatterY1 =
-        directionY *
-        scatter1;
-
-
-      const scatterX2 =
-        directionX *
-        scatter2;
-
-
-      const scatterY2 =
-        directionY *
-        scatter2;
-
-
-      
-
-      word.style.setProperty(
+      span.style.setProperty(
         "--x",
-        finalX + "px"
+        x + "px"
       );
 
-
-      word.style.setProperty(
+      span.style.setProperty(
         "--y",
-        finalY + "px"
+        y + "px"
       );
 
 
-      word.style.setProperty(
-        "--z",
-        z + "px"
+      parent.appendChild(
+        span
       );
+    }
 
 
-      word.style.setProperty(
-        "--scatter-x1",
-        scatterX1 + "px"
-      );
+    /* =====================================
+       CREATE FILLED ELLIPSE
+    ===================================== */
+
+    function createEllipse(
+      centerX,
+      centerY,
+      radiusX,
+      radiusY,
+      count,
+      type = "face",
+      parent = panda
+    ) {
+
+      for (
+        let i = 0;
+        i < count;
+        i++
+      ) {
+
+        const angle =
+          Math.random() *
+          Math.PI *
+          2;
 
 
-      word.style.setProperty(
-        "--scatter-y1",
-        scatterY1 + "px"
-      );
+        const radius =
+          Math.sqrt(
+            Math.random()
+          );
 
 
-      word.style.setProperty(
-        "--scatter-x2",
-        scatterX2 + "px"
-      );
+        const x =
+          centerX +
+          Math.cos(angle) *
+          radiusX *
+          radius;
 
 
-      word.style.setProperty(
-        "--scatter-y2",
-        scatterY2 + "px"
-      );
+        const y =
+          centerY +
+          Math.sin(angle) *
+          radiusY *
+          radius;
 
 
-     
+        createWord(
+          x,
+          y,
+          type,
+          parent
+        );
+      }
+    }
 
-      word.style.opacity =
-        (
-          0.5 +
-          Math.random() * 0.5
+
+    /* =====================================
+       CREATE PANDA FACE
+
+       Entire white head
+    ===================================== */
+
+    createEllipse(
+      0,
+      15,
+      185,
+      175,
+      800,
+      "face"
+    );
+
+
+    /* =====================================
+       EARS
+
+       Coordinates are relative
+       to each ear container.
+    ===================================== */
+
+    createEllipse(
+      0,
+      0,
+      64,
+      64,
+      130,
+      "dark",
+      leftEar
+    );
+
+
+    createEllipse(
+      0,
+      0,
+      64,
+      64,
+      130,
+      "dark",
+      rightEar
+    );
+
+
+    /* =====================================
+       BLACK EYE PATCHES
+    ===================================== */
+
+    createEllipse(
+      -70,
+      -30,
+      55,
+      42,
+      115,
+      "dark"
+    );
+
+
+    createEllipse(
+      70,
+      -30,
+      55,
+      42,
+      115,
+      "dark"
+    );
+
+
+    /* =====================================
+       NOSE
+    ===================================== */
+
+    createEllipse(
+      0,
+      42,
+      25,
+      17,
+      50,
+      "dark"
+    );
+
+
+    /* =====================================
+       TOUCH / CLICK
+    ===================================== */
+
+    let isTalking = false;
+
+
+    container.addEventListener(
+      "pointerdown",
+      () => {
+
+        /*
+          Avoid many voices
+          playing together.
+        */
+
+        if (isTalking) {
+          return;
+        }
+
+
+        isTalking = true;
+
+
+        /*
+          Show message
+        */
+
+        dontTouch.classList.add(
+          "show"
         );
 
 
-  
+        /*
+          Mouth starts
+          open/close animation.
+        */
+
+        mouth.classList.add(
+          "talking"
+        );
 
 
-      heart.appendChild(word);
+        /*
+          Speak
+        */
+
+        speakDontTouch();
+
+      }
+    );
+
+
+    /* =====================================
+       SPEAK
+    ===================================== */
+
+    function speakDontTouch() {
+
+      if (
+        !(
+          "speechSynthesis"
+          in window
+        )
+      ) {
+
+        stopTalking();
+
+        return;
+      }
+
+
+      window
+        .speechSynthesis
+        .cancel();
+
+
+      const speech =
+        new SpeechSynthesisUtterance(
+          "Don't touch me!"
+        );
+
+
+      speech.lang =
+        "en-US";
+
+
+      /*
+        Higher pitch for
+        cute/young sounding effect.
+      */
+
+      speech.pitch =
+        1.85;
+
+
+      speech.rate =
+        1.08;
+
+
+      speech.volume =
+        1;
+
+
+      /*
+        Find a suitable
+        English voice.
+      */
+
+      const voices =
+        window
+          .speechSynthesis
+          .getVoices();
+
+
+      const preferred =
+        voices.find(
+          voice => {
+
+            const name =
+              voice.name
+                .toLowerCase();
+
+
+            return (
+              voice.lang
+                .toLowerCase()
+                .startsWith("en")
+              &&
+              (
+                name.includes(
+                  "zira"
+                )
+                ||
+                name.includes(
+                  "aria"
+                )
+                ||
+                name.includes(
+                  "samantha"
+                )
+                ||
+                name.includes(
+                  "female"
+                )
+              )
+            );
+
+          }
+        );
+
+
+      const fallback =
+        voices.find(
+          voice =>
+            voice.lang
+              .toLowerCase()
+              .startsWith("en")
+        );
+
+
+      if (preferred) {
+
+        speech.voice =
+          preferred;
+
+      } else if (fallback) {
+
+        speech.voice =
+          fallback;
+
+      }
+
+
+      /*
+        When actual voice ends,
+        stop mouth animation.
+      */
+
+      speech.onend =
+        stopTalking;
+
+
+      speech.onerror =
+        stopTalking;
+
+
+      window
+        .speechSynthesis
+        .speak(
+          speech
+        );
+
+
+      /*
+        Browser safety fallback
+      */
+
+      setTimeout(
+        () => {
+
+          if (isTalking) {
+            stopTalking();
+          }
+
+        },
+        1800
+      );
+    }
+
+
+    /* =====================================
+       STOP TALKING
+    ===================================== */
+
+    function stopTalking() {
+
+      mouth.classList.remove(
+        "talking"
+      );
+
+
+      dontTouch.classList.remove(
+        "show"
+      );
+
+
+      isTalking = false;
+    }
+
+
+    /* =====================================
+       LOAD VOICES
+    ===================================== */
+
+    if (
+      "speechSynthesis"
+      in window
+    ) {
+
+      window
+        .speechSynthesis
+        .getVoices();
+
+
+      window
+        .speechSynthesis
+        .onvoiceschanged =
+        () => {
+
+          window
+            .speechSynthesis
+            .getVoices();
+
+        };
     }
 
   </script>
