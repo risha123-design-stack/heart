@@ -616,6 +616,19 @@
 
 
   <script>
+    let cachedVoices = [];
+
+function loadVoices() {
+  cachedVoices = window.speechSynthesis.getVoices();
+}
+
+if ("speechSynthesis" in window) {
+  loadVoices();
+
+  window.speechSynthesis.onvoiceschanged = () => {
+    loadVoices();
+  };
+}
 
     const panda =
       document.getElementById(
@@ -890,10 +903,7 @@
           open/close animation.
         */
 
-        mouth.classList.add(
-          "talking"
-        );
-
+        
 
         /*
           Speak
@@ -911,156 +921,111 @@
 
     function speakDontTouch() {
 
-      if (
-        !(
-          "speechSynthesis"
-          in window
+  if (!("speechSynthesis" in window)) {
+    stopTalking();
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+
+  const speech =
+    new SpeechSynthesisUtterance(
+      "Don't touch me!"
+    );
+
+  speech.lang = "en-US";
+
+  speech.pitch = 1.85;
+
+  speech.rate = 1.08;
+
+  speech.volume = 1;
+
+
+  /*
+    If voices were not loaded yet,
+    fetch them again immediately.
+  */
+
+  if (cachedVoices.length === 0) {
+    cachedVoices =
+      window.speechSynthesis.getVoices();
+  }
+
+
+  const preferred =
+    cachedVoices.find((voice) => {
+
+      const name =
+        voice.name.toLowerCase();
+
+      return (
+        voice.lang
+          .toLowerCase()
+          .startsWith("en")
+        &&
+        (
+          name.includes("zira") ||
+          name.includes("aria") ||
+          name.includes("samantha") ||
+          name.includes("female")
         )
-      ) {
-
-        stopTalking();
-
-        return;
-      }
-
-
-      window
-        .speechSynthesis
-        .cancel();
-
-
-      const speech =
-        new SpeechSynthesisUtterance(
-          "Don't touch me!"
-        );
-
-
-      speech.lang =
-        "en-US";
-
-
-      /*
-        Higher pitch for
-        cute/young sounding effect.
-      */
-
-      speech.pitch =
-        1.85;
-
-
-      speech.rate =
-        1.08;
-
-
-      speech.volume =
-        1;
-
-
-      /*
-        Find a suitable
-        English voice.
-      */
-
-      const voices =
-        window
-          .speechSynthesis
-          .getVoices();
-
-
-      const preferred =
-        voices.find(
-          voice => {
-
-            const name =
-              voice.name
-                .toLowerCase();
-
-
-            return (
-              voice.lang
-                .toLowerCase()
-                .startsWith("en")
-              &&
-              (
-                name.includes(
-                  "zira"
-                )
-                ||
-                name.includes(
-                  "aria"
-                )
-                ||
-                name.includes(
-                  "samantha"
-                )
-                ||
-                name.includes(
-                  "female"
-                )
-              )
-            );
-
-          }
-        );
-
-
-      const fallback =
-        voices.find(
-          voice =>
-            voice.lang
-              .toLowerCase()
-              .startsWith("en")
-        );
-
-
-      if (preferred) {
-
-        speech.voice =
-          preferred;
-
-      } else if (fallback) {
-
-        speech.voice =
-          fallback;
-
-      }
-
-
-      /*
-        When actual voice ends,
-        stop mouth animation.
-      */
-
-      speech.onend =
-        stopTalking;
-
-
-      speech.onerror =
-        stopTalking;
-
-
-      window
-        .speechSynthesis
-        .speak(
-          speech
-        );
-
-
-      /*
-        Browser safety fallback
-      */
-
-      setTimeout(
-        () => {
-
-          if (isTalking) {
-            stopTalking();
-          }
-
-        },
-        1800
       );
+    });
+
+
+  const fallback =
+    cachedVoices.find(
+      voice =>
+        voice.lang
+          .toLowerCase()
+          .startsWith("en")
+    );
+
+
+  if (preferred) {
+    speech.voice = preferred;
+  } else if (fallback) {
+    speech.voice = fallback;
+  }
+
+
+  speech.onstart = () => {
+    mouth.classList.add("talking");
+  };
+
+
+  speech.onend = () => {
+    stopTalking();
+  };
+
+
+  speech.onerror = () => {
+    stopTalking();
+  };
+
+
+  /*
+    Speak immediately on FIRST touch
+  */
+
+  window.speechSynthesis.speak(speech);
+
+
+  /*
+    Chrome/mobile speech sometimes
+    needs a resume call.
+  */
+
+  window.speechSynthesis.resume();
+
+
+  setTimeout(() => {
+    if (isTalking) {
+      stopTalking();
     }
+  }, 2000);
+}
 
 
     /* =====================================
@@ -1087,27 +1052,7 @@
        LOAD VOICES
     ===================================== */
 
-    if (
-      "speechSynthesis"
-      in window
-    ) {
-
-      window
-        .speechSynthesis
-        .getVoices();
-
-
-      window
-        .speechSynthesis
-        .onvoiceschanged =
-        () => {
-
-          window
-            .speechSynthesis
-            .getVoices();
-
-        };
-    }
+    
 
   </script>
 
